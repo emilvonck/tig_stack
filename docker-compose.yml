@@ -1,6 +1,5 @@
 version: "3"
 
-
 services:
   influxdb:
     container_name: influxdb
@@ -21,13 +20,20 @@ services:
     hostname: telegraf-proxy
     volumes:
       - ./telegraf-proxy/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      - ./telegraf-proxy/telegraf.d:/etc/telegraf/telegraf.d:ro
-    command:
-      - "--config-directory=/etc/telegraf/telegraf.d/"
     env_file:
       - ./influxv2.env
     ports:
       - "8088:8088"
+    restart: unless-stopped
+
+  telegraf-http-input:
+    container_name: telegraf-http-input
+    image: telegraf:1.24.4
+    hostname: telegraf-http-input
+    volumes:
+      - ./telegraf-http-input/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    env_file:
+      - ./influxv2.env
     restart: unless-stopped
 
 volumes:
