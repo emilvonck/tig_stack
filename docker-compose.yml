@@ -1,0 +1,34 @@
+version: "3"
+
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.5
+    hostname: influxdb
+    env_file:
+      - influxv2.env
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdbv2:/var/lib/influxdb2:rw
+    ports:
+      - "8086:8086"
+    restart: unless-stopped
+
+  telegraf-proxy:
+    container_name: telegraf-proxy
+    image: telegraf:1.24.4
+    hostname: telegraf-proxy
+    volumes:
+      - ./telegraf-proxy/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf-proxy/telegraf.d:/etc/telegraf/telegraf.d:ro
+    command:
+      - "--config-directory=/etc/telegraf/telegraf.d/"
+    env_file:
+      - ./influxv2.env
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+
+volumes:
+  influxdbv2:
