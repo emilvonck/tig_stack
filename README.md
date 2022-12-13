@@ -6,13 +6,13 @@ Update "influxv2.env", replace with your values.
 ```bash
 cat << 'EOF' > influxdb-v2.env
 DOCKER_INFLUXDB_INIT_MODE=setup
-DOCKER_INFLUXDB_INIT_USERNAME=<initial user>
-DOCKER_INFLUXDB_INIT_PASSWORD=<initial password>
+DOCKER_INFLUXDB_INIT_USERNAME=<username>
+DOCKER_INFLUXDB_INIT_PASSWORD=<password>
 DOCKER_INFLUXDB_INIT_ORG=<org>
-DOCKER_INFLUXDB_INIT_BUCKET=<initial-bucket>
-DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<API token for influxdb>
-DOCKER_INFLUXDB_INIT_RETENTION=1h
-PROXY_TOKEN=<API token for telegraf proxy>
+DOCKER_INFLUXDB_INIT_BUCKET=Telegraf
+DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<admin API token>
+DOCKER_INFLUXDB_INIT_RETENTION=30d
+PROXY_TOKEN=<Proxy token to be used by downstream telegraf collectors>
 EOF
 ```
 
