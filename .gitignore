@@ -96,3 +96,5 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode
 influxv2.env
+backup.yml
+influxdb-v2.env

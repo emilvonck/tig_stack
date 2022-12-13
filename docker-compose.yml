@@ -1,61 +1,47 @@
 version: "3"
 
 services:
-  influxdb:
-    container_name: influxdb
+  influxdb-v2:
     image: influxdb:2.5
+    container_name: influxdb
     hostname: influxdb
     env_file:
-      - influxv2.env
+      - influxdb-v2.env
     volumes:
-      - influxdbv2:/var/lib/influxdb2:rw
+      - influxdb-v2:/var/lib/influxdb2:rw
     ports:
-      - "8086:8086"
+      - 8086:8086
     restart: unless-stopped
 
   telegraf-proxy:
-    container_name: telegraf-proxy
     image: telegraf:1.24.4
+    container_name: telegraf-proxy
     hostname: telegraf-proxy
     volumes:
       - ./telegraf-proxy/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     env_file:
-      - ./influxv2.env
+      - ./influxdb-v2.env
     ports:
-      - "8088:8088"
+      - 8088:8088 # Same as ./telegraf-proxy/telegraf.conf [[inputs.influxdb_v2_listener]]
     depends_on:
-      - "influxdb"
-    restart: unless-stopped
-
-  telegraf-collector:
-    container_name: telegraf-collector
-    image: telegraf:1.24.4
-    hostname: telegraf-collector
-    volumes:
-      - ./telegraf-collector/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    env_file:
-      - ./influxv2.env
-    depends_on:
-      - "telegraf-proxy"
-      - "influxdb"
+      - influxdb
     restart: unless-stopped
 
   grafana:
-    container_name: grafana
     image: grafana/grafana:9.3.1
+    container_name: grafana
     hostname: grafana
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/etc/dashboards:/etc/dashboards
       - grafana-storage:/var/lib/grafana:rw
     env_file:
-      - ./influxv2.env
+      - ./influxdb-v2.env
     ports:
-      - "3000:3000"
+      - 3000:3000
     depends_on:
-      - "influxdb"
+      - influxdb
     restart: unless-stopped
 
 volumes:
-  influxdbv2:
+  influxdb-v2:
   grafana-storage:
