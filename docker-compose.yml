@@ -24,7 +24,7 @@ services:
     ports:
       - 8088:8088 # Same as ./telegraf-proxy/telegraf.conf [[inputs.influxdb_v2_listener]]
     depends_on:
-      - influxdb
+      - influxdb-v2
     restart: unless-stopped
 
   grafana:
@@ -39,7 +39,7 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - influxdb
+      - influxdb-v2
     restart: unless-stopped
 
 volumes:
