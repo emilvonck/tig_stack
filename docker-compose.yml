@@ -32,8 +32,9 @@ services:
     container_name: grafana
     hostname: grafana
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana-storage:/var/lib/grafana:rw
+      - ./grafana/etc/dashboards:/etc/dashboards:ro
     env_file:
       - ./influxdb-v2.env
     ports:

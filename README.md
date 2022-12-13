@@ -23,9 +23,9 @@ docker-compose up -d
 ```
 
 Per default:
-*   influxdb-v2 will be reachable at http://localhost:8086.
-*   telegraf-proxy will be reachable at http://localhost:8088.
-*   grafana will be rechable at http://localhost:3000 with influxdb-v2 as a pre provisioned datasource.
+*   influxdb-v2 will be exposed at port 8086.
+*   telegraf-proxy will be exposed at port 8088 to be used by downstream telegraf collectors.
+*   grafana will be exposed at port 3000. Default username/password = admin/admin
 
 
 Add more buckets in influx for your deployment, telegraf-proxy will route mettrics from downstreams telegrafs per their "bucket" configuration.
