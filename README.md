@@ -4,7 +4,7 @@
 
 Update "influxv2.env", replace with your values.
 ```bash
-cat << 'EOF' > influxv2.env
+cat << 'EOF' > influxdb-v2.env
 DOCKER_INFLUXDB_INIT_MODE=setup
 DOCKER_INFLUXDB_INIT_USERNAME=<initial user>
 DOCKER_INFLUXDB_INIT_PASSWORD=<initial password>
