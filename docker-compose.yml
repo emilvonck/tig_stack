@@ -3,26 +3,38 @@ version: "3"
 services:
   influxdb-v2:
     image: influxdb:2.5
-    container_name: influxdb
-    hostname: influxdb
+    container_name: ${INFLUXDB_HOST}
+    hostname: ${INFLUXDB_HOST}
     env_file:
-      - influxdb-v2.env
+      - ./.env
     volumes:
       - influxdb-v2:/var/lib/influxdb2:rw
+      - ./influxdb-v2/scripts:/docker-entrypoint-initdb.d:ro
     ports:
-      - 8086:8086
+      - ${INFLUXDB_PORT}:8086
     restart: unless-stopped
 
   telegraf-proxy:
     image: telegraf:1.24.4
     container_name: telegraf-proxy
     hostname: telegraf-proxy
+    user: telegraf:${PROXY_USER_ID}
     volumes:
       - ./telegraf-proxy/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/hostfs:ro
+    environment:
+      HOST_ETC: /hostfs/etc
+      HOST_PROC: /hostfs/proc
+      HOST_SYS: /hostfs/sys
+      HOST_VAR: /hostfs/var
+      HOST_RUN: /hostfs/run
+      HOST_MOUNT_PREFIX: /hostfs
+      HOST_HOSTNAME: ${HOSTNAME}
     env_file:
-      - ./influxdb-v2.env
+      - ./.env
     ports:
-      - 8088:8088 # Same as ./telegraf-proxy/telegraf.conf [[inputs.influxdb_v2_listener]]
+      - ${PROXY_PORT}:${PROXY_PORT}
     depends_on:
       - influxdb-v2
     restart: unless-stopped
@@ -36,9 +48,9 @@ services:
       - grafana-storage:/var/lib/grafana:rw
       - ./grafana/etc/dashboards:/etc/dashboards:ro
     env_file:
-      - ./influxdb-v2.env
+      - ./.env
     ports:
-      - 3000:3000
+      - ${GRAFANA_PORT}:3000
     depends_on:
       - influxdb-v2
     restart: unless-stopped
