@@ -1,19 +1,44 @@
 # docker-compose project for TIG stack.
-
+```
+                        +--------------------+                        
+                        |                    |                        
+                        |      grafana       |                        
+                        |                    |                        
+                        |                    |                        
+                        +--------------------+                        
+                                   +                                  
+                                   +                                  
+                                   +                                  
+                        +--------------------+                        
+                        |                    |                        
+                        |     influxdb-v2    |                        
+                        |                    |                        
+                        |                    |                        
+                        +--------------------+                        
+                                   +                                  
+                                   +                                  
+                                   +                                  
+                        +--------------------+                        
+                        |                    |                        
+                        |   telegraf-proxy   |                        
+                        |                    |                        
+                        |                    |                        
+                        +--------------------+                        
+                       +           +          +                       
+                      +            +           +                      
+                     +             +            +                     
++--------------------+  +--------------------+  +--------------------+
+|                    |  |                    |  |                    |
+|    telegraf        |  |     telegraf       |  |     telegraf       |
+|    downstream      |  |     downstream     |  |     downstream     |
+|                    |  |                    |  |                    |
++--------------------+  +--------------------+  +--------------------+
+```
 ## Usage
 
-Update "influxv2.env", replace with your values.
+Copy ".env.example" to .env and set your values.
 ```bash
-cat << 'EOF' > influxdb-v2.env
-DOCKER_INFLUXDB_INIT_MODE=setup
-DOCKER_INFLUXDB_INIT_USERNAME=<username>
-DOCKER_INFLUXDB_INIT_PASSWORD=<password>
-DOCKER_INFLUXDB_INIT_ORG=<org>
-DOCKER_INFLUXDB_INIT_BUCKET=Telegraf
-DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<admin API token>
-DOCKER_INFLUXDB_INIT_RETENTION=30d
-PROXY_TOKEN=<Proxy token to be used by downstream telegraf collectors>
-EOF
+cp .env.example .env
 ```
 
 ## Spin up the stack
@@ -24,11 +49,9 @@ docker-compose up -d
 
 Per default:
 *   influxdb-v2 will be exposed at port 8086.
-*   telegraf-proxy will be exposed at port 8088 to be used by downstream telegraf collectors.
+*   telegraf-proxy will be exposed at port 8088 to be used by downstream telegraf collectors. Metrics will be forwarded to the right bucket via the "bucket_tag" configuration.
 *   grafana will be exposed at port 3000. Default username/password = admin/admin
-
-
-Add more buckets in influx for your deployment, telegraf-proxy will route mettrics from downstreams telegrafs per their "bucket" configuration.
+*   buckets for storing docker and system metrics are auto provisioned via volume mount "./influxdb-v2/scripts:/docker-entrypoint-initdb.d:ro".
 
 ## Contributing
 Pull requests are welcome.
